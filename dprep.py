@@ -43,3 +43,7 @@ np.save("x_trn.npy", data)
 np.save("y_trn.npy", labels)
 np.save("x_tst.npy", data_tst)
 np.save("y_tst.npy", labels_tst)
+np.save("zeros_tst.npy", zeros_tst)
+np.save("ones_tst.npy", ones_tst)
+
+
