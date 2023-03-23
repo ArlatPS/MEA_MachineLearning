@@ -19,7 +19,7 @@ pca.fit(x_trn)
 print(pca.explained_variance_ratio_)
 print(x_trn.shape)
 
-start = 2
+start = 4
 nsets = 10
 nsamp = x_trn.shape[0]
 new_x = np.zeros((nsets*nsamp, x_trn.shape[1]))

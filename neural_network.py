@@ -4,26 +4,24 @@ from keras.layers import Dense, Dropout, Input
 import numpy as np
 
 # load data
-x_trn = np.load('x_trn.npy')
-y_trn = np.load('y_trn.npy')
+x_trn = np.load('x_trn_aug.npy')
+y_trn = np.load('y_trn_aug.npy')
 # x_test = np.load('x_tst.npy')
 # y_test = np.load('y_tst.npy')
 zeros_tst = np.load('zeros_tst.npy')
 ones_tst = np.load('ones_tst.npy')
 
 
-# adding 5% validation data from test (its shuffled)
-ones_test_count = 13
-ones_to_validate = 7
-zeros_test_count = 35
-zeros_to_validate = 10
+# adding 10% validation data from training (its shuffled)
+N = 160
 
-x_val = np.concatenate((zeros_tst[0:zeros_to_validate],ones_tst[0:ones_to_validate]))
-zeros_tst = zeros_tst[zeros_to_validate:]
-ones_tst = ones_tst[ones_to_validate:]
-y_val = np.concatenate((np.zeros(zeros_to_validate), np.ones(ones_to_validate)))
+x_val = x_trn[:N]
+x_trn = x_trn[N:]
+y_val = y_trn[:N]
+y_trn = y_trn[N:]
+
 batch_size = 8
-epochs = 150
+epochs = 40
 
 model = Sequential()
 model.add(Input(shape=(120,)))
@@ -40,8 +38,8 @@ print(model.summary())
 
 history = model.fit(x_trn, y_trn, batch_size=batch_size, epochs=epochs, verbose=1, validation_data=(x_val,y_val))
 
-score = model.evaluate(zeros_tst ,np.zeros(zeros_test_count - zeros_to_validate), verbose=0)
-score2 = model.evaluate(ones_tst ,np.ones(ones_test_count - ones_to_validate), verbose=0)
+score = model.evaluate(zeros_tst ,np.zeros(zeros_tst.shape[0]), verbose=0)
+score2 = model.evaluate(ones_tst ,np.ones(ones_tst.shape[0]), verbose=0)
 
 
 print('Test loss:     ', score[0])
