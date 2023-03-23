@@ -33,7 +33,7 @@ for i in range(reps):
     # zeros
     ## more balanced validation data - bigger to be later taken
     N_zeros = 190
-    N_zeros_to_test = 90;
+    N_zeros_to_test = 30;
     zeros_tst = np.zeros((N_zeros_to_test, 120))
     ZT_count = -1;
     new_zeros = np.zeros((N_zeros - N_zeros_to_test, 120))
@@ -62,10 +62,34 @@ for i in range(reps):
             NZ_count +=1
             new_ones[NZ_count] = ones[i]
 
+    def generateData(pca, x, start):
+        original = pca.components_.copy()
+        ncomp = pca.components_.shape[0]
+        a = pca.transform(x)
+        for i in range(start, ncomp):
+            pca.components_[i,:] += np.random.normal(scale=0.1, size=ncomp)
+            b = pca.inverse_transform(a)
+            pca.components_ = original.copy()
+            return b
+
+    pca = decomposition.PCA(n_components=120)
+    pca.fit(np.concatenate((new_ones,new_ones, new_ones,new_ones,new_ones,new_ones)))
+    print(pca.explained_variance_ratio_)
+
+    start = 3
+    nsets = 10
+    nsamp = new_ones.shape[0]
+    new_unos = np.zeros((nsets*nsamp, new_ones.shape[1]))
+
+    for i in range(nsets):
+        if (i == 0):
+            new_unos[0:nsamp,:] = new_ones
+        else:
+            new_unos[(i * nsamp):((i + 1) * nsamp), :] = generateData(pca,new_ones,start)
 
 
     # data for learning shuffled 
-    data = np.concatenate((new_zeros, new_ones))
+    data = np.concatenate((new_zeros, new_unos))
     labels = np.concatenate((np.zeros(N_zeros - N_zeros_to_test), np.ones(N_ones - N_ones_to_test)))
 
     # new indexes
@@ -90,15 +114,6 @@ for i in range(reps):
 
 
 
-    def generateData(pca, x, start):
-        original = pca.components_.copy()
-        ncomp = pca.components_.shape[0]
-        a = pca.transform(x)
-        for i in range(start, ncomp):
-            pca.components_[i,:] += np.random.normal(scale=0.1, size=ncomp)
-            b = pca.inverse_transform(a)
-            pca.components_ = original.copy()
-            return b
 
     x_trn = data
     y_trn = labels
@@ -178,5 +193,6 @@ print(f"Average accuracy for non-responsive: {sum_zeros / reps}")
 print(f"Average accuracy for responsive: {sum_ones / reps}")
 print(f"Global accuracy: {(sum_ones / reps + sum_zeros / reps)/2}")
 
-# Average accuracy for non-responsive: 0.96
+# Average accuracy for non-responsive: 0.98
 # Average accuracy for responsive: 0.48
+# Global 0.73
