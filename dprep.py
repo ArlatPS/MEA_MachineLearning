@@ -25,7 +25,7 @@ for i in range(my_data.shape[1]):
 # zeros
 ## more balanced validation data - bigger to be later taken
 N_zeros = 190
-N_zeros_to_test = 35
+N_zeros_to_test = 50;
 zeros_tst = np.zeros((N_zeros_to_test, 120))
 ZT_count = -1;
 new_zeros = np.zeros((N_zeros - N_zeros_to_test, 120))
@@ -40,7 +40,7 @@ for i in range(N_zeros):
         new_zeros[NZ_count] = zeros[i]
 
 N_ones = 31;
-N_ones_to_test = 13;
+N_ones_to_test = 8;
 ones_tst = np.zeros((N_ones_to_test, 120))
 ZT_count = -1;
 new_ones = np.zeros((N_ones - N_ones_to_test, 120))
